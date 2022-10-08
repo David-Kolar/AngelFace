@@ -2,7 +2,7 @@ import pygame
 import pygame_menu
 from time import time
 from pygame.locals import *
-from random import randint
+from random import choice, randint
 from pygame_menu.locals import *
 game = False
 
@@ -29,8 +29,8 @@ class Lukas():
         self.move_delay = 10
         self.timer_animation.set(self.animation_delay)
         self.pozice = 0
-        self.change = 1
-        self.jump_velocity = -20
+        self.change = 0.7
+        self.jump_velocity = -18
         img1 = pygame.image.load("sprites/lukas_tycka01.png")
         img2 = pygame.image.load("sprites/lukas_tycka02.png")
         self.animations = [pygame.transform.scale(img1, (img1.get_width()*3, img1.get_height()*3)), pygame.transform.scale(img2, (img2.get_width()*3, img2.get_height()*3))]
@@ -60,11 +60,42 @@ class Lukas():
             self.velocity = self.jump_velocity
             self.falling = True
 
-class Obstacle():
-    def __init__(self, x):
-        self.x = x
+class Obstacles():
+    def __init__(self):
+        self.obstacles = []
+        self.timer = Timer()
+        self.delay = 40
+        self.velocity = -15
+        self.timer.set(self.delay)
+
+    def add_random(self):
+        y = 425
+        if (not len(self.obstacles)):
+            x = 800
+        else:
+            x = self.obstacles[-1].x + choice([200, 400, 600])
+        self.obstacles.append(Obstacle(x, y))
+
     def move(self):
-        pass
+        if not(self.timer):
+            for i, obstacle in enumerate(self.obstacles):
+                obstacle.x += self.velocity
+                if (obstacle.x + obstacle.image.get_width() < 0):
+                    del self.obstacles[i]
+                    self.add_random()
+            self.timer.set(self.delay)
+
+    def print(self):
+        for obstacle in self.obstacles:
+            screen.blit(obstacle.image, (obstacle.x, obstacle.y))
+
+class Obstacle():
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load("sprites/cactus_scaled.png")
+
+
 def play_menu_music():
     pygame.mixer.music.load(f"""sprites/menu_theme{"2" if (randint(0, 2) == 0) else ""}.mp3""")
     pygame.mixer.music.play(-1)
@@ -83,11 +114,16 @@ def gameLoop():
     screen.fill((0, 0, 0))
     screen.blit(background, (0, 0))
     lukas.move()
+    obstacles.move()
     lukas.print()
+    obstacles.print()
 
 icon = pygame.image.load("sprites/lukas_hlava.png")
 pygame.display.set_icon(icon)
-lukas = Lukas(100, 370)
+y_border = 370
+lukas = Lukas(100, y_border)
+obstacles = Obstacles()
+for i in range(5): obstacles.add_random()
 pygame.init()
 running = True
 screen = pygame.display.set_mode((800, 800))
