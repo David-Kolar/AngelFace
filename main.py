@@ -17,12 +17,24 @@ class Timer():
     def set(self, delay):
         self.time = self.aktualni() + delay
 
+def check_interval(a0, a1, b0, b1):
+    return (a1 <= b0)or(b1 <= a0)
+
+def is_lukas_safe():
+    for obstacle in obstacles.obstacles:
+       #print(lukas.y, lukas.y + lukas.height, obstacle.y, obstacle.y+obstacle.height)
+       if not (check_interval(lukas.x, lukas.x + lukas.width, obstacle.x, obstacle.x+obstacle.width) or check_interval(lukas.y, lukas.y + lukas.height, obstacle.y, obstacle.y+obstacle.height)):
+            return False
+    return True
+
 class Lukas():
     def __init__(self, x, y):
         self.falling = False
         self.border = y
         self.x = x
         self.y = y
+        self.width = 22*3
+        self.height = 38*3
         self.velocity = 0
         self.x_velocity = 10
         self.timer_animation = Timer()
@@ -108,6 +120,8 @@ class Obstacle():
     def __init__(self, x, y, img):
         self.x = x
         self.y = y
+        self.width = img.get_width()
+        self.height = img.get_height()
         self.image = img
 
 
@@ -116,7 +130,10 @@ def play_menu_music():
     pygame.mixer.music.play(-1)
 
 def start_the_game():
-    global game
+    global game, lukas, obstacles
+    lukas = Lukas(100, y_border)
+    obstacles = Obstacles()
+    for i in range(5): obstacles.add_random()
     game = True
     play_battle_music()
     pygame.display.update()
@@ -128,13 +145,9 @@ def play_battle_music():
 pygame.init()
 screen = pygame.display.set_mode((800, 800))
 background_menu = pygame_menu.baseimage.BaseImage("sprites/angel_face_logo.png")
-
 icon = pygame.image.load("sprites/lukas_hlava.png")
 pygame.display.set_icon(icon)
 y_border = 370
-lukas = Lukas(100, y_border)
-obstacles = Obstacles()
-for i in range(5): obstacles.add_random()
 running = True
 space_pressed = False
 left_pressed = False
@@ -192,6 +205,11 @@ while True:
     else:
         lukas.move()
         obstacles.move()
+        if (not is_lukas_safe()):
+            game=False
+            screen.fill((0, 0, 0))
+            play_menu_music()
+            continue
         screen.blit(background, (0, 0))
         lukas.print()
         obstacles.print()
