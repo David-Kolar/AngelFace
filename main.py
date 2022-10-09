@@ -1,3 +1,8 @@
+"""
+Program: Spaghetti code hra s Lukášem bez komentářů.
+Autor: David Kolář
+Email: kolard@jirovcovka.net
+"""
 import pygame
 import pygame_menu
 from time import time
@@ -214,5 +219,4 @@ while True:
         lukas.print()
         obstacles.print()
         pygame.display.update()
-
 
