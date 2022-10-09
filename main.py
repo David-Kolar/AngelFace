@@ -118,6 +118,8 @@ def gameLoop():
     lukas.print()
     obstacles.print()
 
+background_menu = pygame_menu.baseimage.BaseImage("sprites/angel_face_logo.png")
+
 icon = pygame.image.load("sprites/lukas_hlava.png")
 pygame.display.set_icon(icon)
 y_border = 370
@@ -137,9 +139,11 @@ mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent backgro
                 title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_NONE
                 )
 menu = pygame_menu.Menu("", 800, 800, theme=mytheme)
+menu.add.image(background_menu)
 menu.add.text_input('', default='Luk64')
 menu.add.button('Play', start_the_game)
 menu.add.button('leave', pygame_menu.events.EXIT)
+
 play_menu_music()
 while True:
     events = pygame.event.get()
