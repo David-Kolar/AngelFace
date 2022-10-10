@@ -157,7 +157,7 @@ running = True
 space_pressed = False
 left_pressed = False
 right_pressed = False
-background = pygame.image.load("sprites/background_hogwarts03.png")
+background = pygame.image.load("sprites/background_hogwarts04.png")
 pygame.display.set_caption("#knotakjede")
 clock = pygame.time.Clock()
 mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent background
