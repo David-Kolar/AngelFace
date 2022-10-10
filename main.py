@@ -95,7 +95,7 @@ class Obstacles():
         self.timer = Timer()
         self.delay = 10
         self.image = pygame.image.load("sprites/cactus_scaled.png")
-        self.velocity = -5
+        self.velocities = [-5, -7, -8, -10, -12, -14]
         self.timer.set(self.delay)
 
     def add_random(self):
@@ -109,7 +109,7 @@ class Obstacles():
     def move(self):
         if not(self.timer):
             for i, obstacle in enumerate(self.obstacles):
-                obstacle.x += self.velocity
+                obstacle.x += self.velocities[level]
                 if (obstacle.x + obstacle.image.get_width() < 0):
                     del self.obstacles[i]
                     self.add_random()
@@ -129,9 +129,13 @@ class Obstacle():
         self.height = img.get_height()
         self.image = img
 
+def set_level():
+    global level
+    if (score >= levels[level]):
+        level += 1
 
 def play_menu_music():
-    pygame.mixer.music.load(f"""sprites/menu_theme{"2" if (randint(0, 2) == 0) else ""}.mp3""")
+    pygame.mixer.music.load(f"""sprites/menu_theme{"2" if (randint(0, 4) == 0) else ""}.mp3""")
     pygame.mixer.music.play(-1)
 
 def start_the_game():
@@ -176,6 +180,8 @@ menu.add.button('Play', start_the_game)
 menu.add.button('leave', pygame_menu.events.EXIT)
 font = pygame.font.Font('freesansbold.ttf', 42)
 play_menu_music()
+level = 0
+levels = [10, 20, 40, 50, 60, 10000]
 while True:
     clock.tick(50)
     events = pygame.event.get()
@@ -214,11 +220,12 @@ while True:
             game=False
             screen.fill((0, 0, 0))
             play_menu_music()
+            level = 0
             continue
         screen.blit(background, (0, 0))
         score = int((time() - start_time))
-        print(score)
         text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
+        set_level()
         screen.blit(text, (50, 50))
         lukas.print()
         obstacles.print()
