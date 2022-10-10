@@ -66,9 +66,9 @@ class Lukas():
     def move(self):
         if not(self.timer_move):
             self.velocity += self.change
-            if (left_pressed):
+            if (left_pressed) and (self.x > 0):
                 self.x -= self.x_velocity
-            if (right_pressed):
+            if (right_pressed and self.x <= 750):
                 self.x += self.x_velocity
             if (self.y + self.velocity > self.border):
                 self.y = self.border
@@ -135,7 +135,8 @@ def play_menu_music():
     pygame.mixer.music.play(-1)
 
 def start_the_game():
-    global game, lukas, obstacles
+    global game, lukas, obstacles, start_time
+    start_time = time()
     lukas = Lukas(100, y_border)
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
@@ -148,8 +149,9 @@ def play_battle_music():
     pygame.mixer.music.play(-1)
 
 pygame.init()
+score = 0
 screen = pygame.display.set_mode((800, 800))
-background_menu = pygame_menu.baseimage.BaseImage("sprites/angel_face_logo.png")
+background_menu = pygame_menu.baseimage.BaseImage("sprites/angel_face_GTA_logo.png")
 icon = pygame.image.load("sprites/lukas_hlava.png")
 pygame.display.set_icon(icon)
 y_border = 370
@@ -157,7 +159,7 @@ running = True
 space_pressed = False
 left_pressed = False
 right_pressed = False
-background = pygame.image.load("sprites/background_hogwarts04.png")
+background = pygame.image.load("sprites/background_hogwarts05.png")
 pygame.display.set_caption("#knotakjede")
 clock = pygame.time.Clock()
 mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent background
@@ -172,7 +174,7 @@ menu.add.image(background_menu)
 menu.add.text_input('', default='Luk64')
 menu.add.button('Play', start_the_game)
 menu.add.button('leave', pygame_menu.events.EXIT)
-
+font = pygame.font.Font('freesansbold.ttf', 42)
 play_menu_music()
 while True:
     clock.tick(50)
@@ -198,8 +200,6 @@ while True:
         lukas.jump()
 
 
-
-
     if not game:
         menu.draw(screen)
         if(menu.update(events)):
@@ -216,6 +216,10 @@ while True:
             play_menu_music()
             continue
         screen.blit(background, (0, 0))
+        score = int((time() - start_time))
+        print(score)
+        text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
+        screen.blit(text, (50, 50))
         lukas.print()
         obstacles.print()
         pygame.display.update()
