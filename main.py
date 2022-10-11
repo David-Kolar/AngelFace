@@ -132,6 +132,7 @@ class Obstacle():
 def set_level():
     global level
     if (score >= levels[level]):
+        pygame.mixer.Sound.play(zvuky[randint(1, 2)])
         level += 1
 
 def play_menu_music():
@@ -140,6 +141,7 @@ def play_menu_music():
 
 def start_the_game():
     global game, lukas, obstacles, start_time, score
+    pygame.mixer.Sound.play(zvuky[0])
     start_time = time()*10
     lukas = Lukas(100, y_border)
     obstacles = Obstacles()
@@ -154,6 +156,8 @@ def play_battle_music():
 
 pygame.init()
 score = 0
+zvuky = [pygame.mixer.Sound("sprites/lets go .mp3"), pygame.mixer.Sound("sprites/wow.mp3"), pygame.mixer.Sound("sprites/amazing .mp3"), pygame.mixer.Sound(
+    "sprites/dead2.mp3")]
 screen = pygame.display.set_mode((800, 800))
 background_menu = pygame_menu.baseimage.BaseImage("sprites/angel_face_GTA_logo.png")
 icon = pygame.image.load("sprites/lukas_hlava.png")
@@ -218,6 +222,7 @@ while True:
         obstacles.move()
         if (not is_lukas_safe()):
             game=False
+            pygame.mixer.Sound.play(zvuky[3])
             screen.fill((0, 0, 0))
             play_menu_music()
             level = 0
