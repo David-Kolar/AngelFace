@@ -10,7 +10,6 @@ from collections import deque
 from pygame.locals import *
 from random import choice, randint
 from pygame_menu.locals import *
-game = False
 
 class Timer():
     def __init__(self):
@@ -130,6 +129,7 @@ class Obstacle():
         self.height = img.get_height()
         self.image = img
 
+
 def set_level():
     global level
     if (score >= levels[level]):
@@ -140,12 +140,13 @@ def play_menu_music():
     pygame.mixer.music.play(-1)
 
 def start_the_game():
-    global game, lukas, obstacles, start_time, score
+    global game_state, lukas, obstacles, start_time, score, level
+    level = 0
     start_time = time()*10
     lukas = Lukas(100, y_border)
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
-    game = True
+    game_state = 1
     play_battle_music()
     pygame.display.update()
 
@@ -153,16 +154,21 @@ def play_battle_music():
     pygame.mixer.music.load("sprites/overworld_theme.mp3")
     pygame.mixer.music.play(-1)
 
+def set_menu():
+    global game_state
+    screen.fill((0, 0, 0))
+    pygame.display.update()
+    play_menu_music()
+    game_state = 0
+
 pygame.mixer.pre_init(22050, -16, 2, 1024)
 pygame.init()
 pygame.mixer.quit()
 pygame.mixer.init(22050, -16, 2, 1024)
-
-score = 0
+game_state = 0
 jump_zvuk = pygame.mixer.Sound("sprites/Mario Jump - Gaming Sound Effect (HD)20150625.mp3")
 jump_zvuk.set_volume(0.04)
 screen = pygame.display.set_mode((800, 800))
-background_menu = pygame_menu.baseimage.BaseImage("sprites/angel_face_GTA_logo.png")
 icon = pygame.image.load("sprites/lukas_hlava.png")
 pygame.display.set_icon(icon)
 y_border = 370
@@ -173,8 +179,9 @@ right_pressed = False
 background = pygame.image.load("sprites/background_hogwarts05.png")
 pygame.display.set_caption("#knotakjede")
 clock = pygame.time.Clock()
+###################### Herni menu #################################################
+background_menu = pygame_menu.baseimage.BaseImage("sprites/angel_face_GTA_logo.png")
 mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent background
-                title_background_color=(120, 47, 126),
                 title_font_shadow=True,
                 widget_padding=25,
                 widget_font=pygame_menu.font.FONT_8BIT,
@@ -185,10 +192,15 @@ menu.add.image(background_menu)
 menu.add.text_input('', default='Luk64')
 menu.add.button('Play', start_the_game)
 menu.add.button('leave', pygame_menu.events.EXIT)
+###################################################################################
+################### Game Over Menu ################################################
+game_over = pygame_menu.Menu("Game Over", 800, 800, theme=mytheme)
+game_over.add.button("Play", start_the_game)
+game_over.add.button("Back to menu", set_menu)
+###################################################################################
 font = pygame.font.Font('freesansbold.ttf', 42)
-play_menu_music()
-level = 0
 levels = [100, 200, 400, 500, 600, 100000]
+set_menu()
 while True:
     clock.tick(50)
     events = pygame.event.get()
@@ -213,21 +225,19 @@ while True:
         lukas.jump()
 
 
-    if not game:
+    if game_state==0:
         menu.draw(screen)
         if(menu.update(events)):
             pygame.display.update()
             menu.draw(screen)
             screen.fill((0, 0, 0))
         pygame.display.update()
-    else:
+    elif (game_state==1):
         lukas.move()
         obstacles.move()
         if (not is_lukas_safe()):
-            game=False
-            screen.fill((0, 0, 0))
-            play_menu_music()
-            level = 0
+            game_state=2
+            pygame.mixer.music.stop()
             continue
         screen.blit(background, (0, 0))
         score = int((time()*10 - start_time))
@@ -236,5 +246,11 @@ while True:
         screen.blit(text, (50, 50))
         lukas.print()
         obstacles.print()
+        pygame.display.update()
+    else:
+        game_over.draw(screen)
+        if (game_over.update(events)):
+            pygame.display.update()
+            game_over.draw(screen)
         pygame.display.update()
 
