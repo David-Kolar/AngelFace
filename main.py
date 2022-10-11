@@ -153,12 +153,14 @@ def play_battle_music():
     pygame.mixer.music.load("sprites/overworld_theme.mp3")
     pygame.mixer.music.play(-1)
 
-pygame.mixer.pre_init(44100, -16, 2, 2048)
-pygame.mixer.init()
+pygame.mixer.pre_init(22050, -16, 2, 1024)
 pygame.init()
+pygame.mixer.quit()
+pygame.mixer.init(22050, -16, 2, 1024)
+
 score = 0
 jump_zvuk = pygame.mixer.Sound("sprites/Mario Jump - Gaming Sound Effect (HD)20150625.mp3")
-jump_zvuk.set_volume(0.05)
+jump_zvuk.set_volume(0.04)
 screen = pygame.display.set_mode((800, 800))
 background_menu = pygame_menu.baseimage.BaseImage("sprites/angel_face_GTA_logo.png")
 icon = pygame.image.load("sprites/lukas_hlava.png")
