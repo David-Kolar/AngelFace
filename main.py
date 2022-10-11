@@ -139,8 +139,8 @@ def play_menu_music():
     pygame.mixer.music.play(-1)
 
 def start_the_game():
-    global game, lukas, obstacles, start_time
-    start_time = time()
+    global game, lukas, obstacles, start_time, score
+    start_time = time()*10
     lukas = Lukas(100, y_border)
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
@@ -181,7 +181,7 @@ menu.add.button('leave', pygame_menu.events.EXIT)
 font = pygame.font.Font('freesansbold.ttf', 42)
 play_menu_music()
 level = 0
-levels = [10, 20, 40, 50, 60, 10000]
+levels = [100, 200, 400, 500, 600, 100000]
 while True:
     clock.tick(50)
     events = pygame.event.get()
@@ -223,7 +223,7 @@ while True:
             level = 0
             continue
         screen.blit(background, (0, 0))
-        score = int((time() - start_time))
+        score = int((time()*10 - start_time))
         text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
         set_level()
         screen.blit(text, (50, 50))
