@@ -136,7 +136,7 @@ def set_level():
         level += 1
 
 def play_menu_music():
-    pygame.mixer.music.load(f"""sprites/menu_theme{"2" if (randint(0, 4) == 0) else ""}.mp3""")
+    pygame.mixer.music.load(f"""sprites/menu_theme{"2" if (randint(0, 8) == 0) else ""}.mp3""")
     pygame.mixer.music.play(-1)
 
 def start_the_game():
