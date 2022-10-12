@@ -194,9 +194,11 @@ menu.add.button('Play', start_the_game)
 menu.add.button('leave', pygame_menu.events.EXIT)
 ###################################################################################
 ################### Game Over Menu ################################################
-game_over = pygame_menu.Menu("Game Over", 800, 800, theme=mytheme)
+game_over_background_image = pygame.image.load("sprites/game_over.png")
+game_over = pygame_menu.Menu("", 800, 800, theme=mytheme)
 game_over.add.button("Play", start_the_game)
 game_over.add.button("Back to menu", set_menu)
+
 ###################################################################################
 font = pygame.font.Font('freesansbold.ttf', 42)
 levels = [100, 200, 400, 500, 600, 100000]
@@ -226,6 +228,7 @@ while True:
 
 
     if game_state==0:
+        screen.fill((0, 0, 0))
         menu.draw(screen)
         if(menu.update(events)):
             pygame.display.update()
@@ -248,6 +251,7 @@ while True:
         obstacles.print()
         pygame.display.update()
     else:
+        screen.blit(game_over_background_image, (0, 0))
         game_over.draw(screen)
         if (game_over.update(events)):
             pygame.display.update()
