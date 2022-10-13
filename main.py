@@ -180,7 +180,7 @@ background = pygame.image.load("sprites/background_hogwarts05.png")
 pygame.display.set_caption("#knotakjede")
 clock = pygame.time.Clock()
 ###################### Herni menu #################################################
-background_menu = pygame_menu.baseimage.BaseImage("sprites/angel_face_GTA_logo.png")
+background_menu = pygame.image.load("sprites/menu_background.png")
 mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent background
                 title_font_shadow=True,
                 widget_padding=25,
@@ -188,7 +188,6 @@ mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent backgro
                 title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_NONE
                 )
 menu = pygame_menu.Menu("", 800, 800, theme=mytheme)
-menu.add.image(background_menu)
 menu.add.text_input('', default='Luk64')
 menu.add.button('Play', start_the_game)
 menu.add.button('leave', pygame_menu.events.EXIT)
@@ -229,11 +228,11 @@ while True:
 
     if game_state==0:
         screen.fill((0, 0, 0))
+        screen.blit(background_menu, (0, 0))
         menu.draw(screen)
         if(menu.update(events)):
             pygame.display.update()
             menu.draw(screen)
-            screen.fill((0, 0, 0))
         pygame.display.update()
     elif (game_state==1):
         lukas.move()
