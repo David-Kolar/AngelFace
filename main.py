@@ -31,6 +31,17 @@ def is_lukas_safe():
             return False
     return True
 
+def load_highscore():
+    with open("data") as file:
+        cislo = int(file.read())
+    return cislo
+
+def set_highscore():
+    highscore = load_highscore()
+    if (score > highscore):
+        with open("data", "w") as file:
+            file.write(str(score))
+
 class Lukas():
     def __init__(self, x, y):
         self.falling = False
@@ -140,9 +151,10 @@ def play_menu_music():
     pygame.mixer.music.play(-1)
 
 def start_the_game():
-    global game_state, lukas, obstacles, start_time, score, level
+    global game_state, lukas, obstacles, start_time, score, level, highscore
     level = 0
     start_time = time()*10
+    highscore = load_highscore()
     lukas = Lukas(100, y_border)
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
@@ -166,6 +178,7 @@ pygame.init()
 pygame.mixer.quit()
 pygame.mixer.init(22050, -16, 2, 1024)
 game_state = 0
+highscore = 0
 jump_zvuk = pygame.mixer.Sound("sprites/Mario Jump - Gaming Sound Effect (HD)20150625.mp3")
 jump_zvuk.set_volume(0.04)
 screen = pygame.display.set_mode((800, 800))
@@ -199,7 +212,7 @@ game_over.add.button("Play", start_the_game)
 game_over.add.button("Back to menu", set_menu)
 
 ###################################################################################
-font = pygame.font.Font('freesansbold.ttf', 42)
+font = pygame.font.Font('freesansbold.ttf', 32)
 levels = [100, 200, 400, 500, 600, 100000]
 set_menu()
 while True:
@@ -240,12 +253,15 @@ while True:
         if (not is_lukas_safe()):
             game_state=2
             pygame.mixer.music.stop()
+            set_highscore()
             continue
         screen.blit(background, (0, 0))
         score = int((time()*10 - start_time))
         text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
+        h_text = font.render("{:0>5d}".format(highscore), True, (255, 255, 255))
         set_level()
-        screen.blit(text, (50, 50))
+        screen.blit(text, (20, 20))
+        screen.blit(h_text, (20, 54))
         lukas.print()
         obstacles.print()
         pygame.display.update()
