@@ -232,8 +232,9 @@ mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent backgro
                 title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_NONE
                 )
 menu = pygame_menu.Menu("", 800, 800, theme=mytheme)
-menu.add.text_input('', default=config["name"])
+#menu.add.text_input('', default=config["name"])
 menu.add.button('play', start_the_game)
+menu.add.button('two players', start_the_game)
 menu.add.button('leave', pygame_menu.events.EXIT)
 ###################################################################################
 ################### Game Over Menu ################################################
