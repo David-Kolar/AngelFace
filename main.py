@@ -213,7 +213,7 @@ background = pygame.image.load("sprites/background_hogwarts05.png")
 pygame.display.set_caption("#knotakjede")
 clock = pygame.time.Clock()
 ###################### Herni menu #################################################
-background_menu = pygame.image.load("sprites/menu_background.png")
+background_menu = pygame.image.load("sprites/menu_background_deluxe.png")
 mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent background
                 title_font_shadow=True,
                 widget_padding=25,
@@ -281,7 +281,7 @@ while True:
         score = int((time()*10 - start_time))
         if ((score) % 100 == 0 and score != predchozi_score):
             zvuk = [zvuky.wow, zvuky.amazing, zvuky.sheesh]
-            zvuky.play(choice(zvuk))
+            zvuky.play(zvuk[(score//100)%len(zvuk)])
             predchozi_score = score
         text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
         h_text = font.render("{:0>5d}".format(highscore), True, (255, 255, 255))
