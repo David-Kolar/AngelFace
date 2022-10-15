@@ -62,8 +62,8 @@ class Lukas():
         self.pozice = 0
         self.change = 1
         self.jump_velocity = -20
-        img1 = pygame.image.load("sprites/lukas_tycka01.png")
-        img2 = pygame.image.load("sprites/lukas_tycka02.png")
+        img1 = pygame.image.load("sprites/lukas_princezna01.png")
+        img2 = pygame.image.load("sprites/lukas_princezna02.png")
         self.animations = [pygame.transform.scale(img1, (img1.get_width()*3, img1.get_height()*3)), pygame.transform.scale(img2, (img2.get_width()*3, img2.get_height()*3))]
 
     def animation(self):
@@ -213,7 +213,7 @@ background = pygame.image.load("sprites/background_hogwarts05.png")
 pygame.display.set_caption("#knotakjede")
 clock = pygame.time.Clock()
 ###################### Herni menu #################################################
-background_menu = pygame.image.load("sprites/menu_background_deluxe.png")
+background_menu = pygame.image.load("sprites/menu_background.png")
 mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent background
                 title_font_shadow=True,
                 widget_padding=25,
