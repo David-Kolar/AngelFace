@@ -11,6 +11,7 @@ from pygame.locals import *
 from random import choice, randint
 from pygame_menu.locals import *
 
+
 class Timer():
     def __init__(self):
         self.time = 0
@@ -207,7 +208,7 @@ mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent backgro
                 )
 menu = pygame_menu.Menu("", 800, 800, theme=mytheme)
 menu.add.text_input('', default='Luk64')
-menu.add.button('Play', start_the_game)
+menu.add.button('play', start_the_game)
 menu.add.button('leave', pygame_menu.events.EXIT)
 ###################################################################################
 ################### Game Over Menu ################################################
