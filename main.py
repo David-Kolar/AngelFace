@@ -148,7 +148,7 @@ def set_level():
         level += 1
 
 def play_menu_music():
-    pygame.mixer.music.load(f"""sprites/menu_theme{"2" if (randint(0, 9) == 0) else ""}.mp3""")
+    pygame.mixer.music.load(f"""sprites/menu_theme{"2" if (randint(0, 10) == 0) else ""}.mp3""")
     pygame.mixer.music.play(-1)
 
 def start_the_game():
@@ -159,6 +159,7 @@ def start_the_game():
     lukas = Lukas(100, y_border)
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
+    pygame.mixer.Sound.play(zvuky.lets_go)
     game_state = 1
     play_battle_music()
     pygame.display.update()
@@ -186,6 +187,12 @@ class Zvuky():
     def __init__(self):
         self.skok = pygame.mixer.Sound("sprites/Mario Jump - Gaming Sound Effect (HD)20150625.mp3")
         self.smrt = pygame.mixer.Sound("sprites/death.mp3")
+        self.lets_go = pygame.mixer.Sound("sprites/Lets go.mp3")
+        self.wow = pygame.mixer.Sound("sprites/Wow.mp3")
+        self.amazing = pygame.mixer.Sound("sprites/Amazing.mp3")
+        self.sheesh = pygame.mixer.Sound("sprites/Sheesh.mp3")
+    def play(self, zvuk):
+        pygame.mixer.Sound.play(zvuk)
 
 pygame.init()
 game_state = 0
@@ -226,7 +233,8 @@ game_over.add.button("Back to menu", set_menu)
 
 ###################################################################################
 font = pygame.font.Font('freesansbold.ttf', 32)
-levels = [100, 200, 400, 500, 600, 100000]
+levels = [100, 200, 300, 400, 500, float("inf")]
+predchozi_score = 0
 load_company_intro()
 set_menu()
 while True:
@@ -249,8 +257,6 @@ while True:
                 left_pressed = False
             if (event.key == pygame.K_RIGHT):
                 right_pressed = False
-    if (space_pressed):
-        lukas.jump()
 
     if game_state==0:
         screen.fill((0, 0, 0))
@@ -261,6 +267,8 @@ while True:
             menu.draw(screen)
         pygame.display.update()
     elif (game_state==1):
+        if (space_pressed):
+            lukas.jump()
         lukas.move()
         obstacles.move()
         if (not is_lukas_safe()):
@@ -271,6 +279,10 @@ while True:
             continue
         screen.blit(background, (0, 0))
         score = int((time()*10 - start_time))
+        if ((score) % 100 == 0 and score != predchozi_score):
+            zvuk = [zvuky.wow, zvuky.amazing, zvuky.sheesh]
+            zvuky.play(choice(zvuk))
+            predchozi_score = score
         text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
         h_text = font.render("{:0>5d}".format(highscore), True, (255, 255, 255))
         set_level()
