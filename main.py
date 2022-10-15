@@ -10,8 +10,11 @@ from collections import deque
 from pygame.locals import *
 from random import choice, randint
 from pygame_menu.locals import *
+import toml
 
-
+def load_config():
+    return toml.load("config.toml")
+config = load_config()
 class Timer():
     def __init__(self):
         self.time = 0
@@ -97,7 +100,7 @@ class Lukas():
 
     def jump(self):
         if (not self.falling):
-            pygame.mixer.Sound.play(jump_zvuk)
+            zvuky.play(zvuky.skok)
             self.velocity = self.jump_velocity
             self.falling = True
 
@@ -159,7 +162,7 @@ def start_the_game():
     lukas = Lukas(100, y_border)
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
-    pygame.mixer.Sound.play(zvuky.lets_go)
+    zvuky.play(zvuky.lets_go)
     game_state = 1
     play_battle_music()
     pygame.display.update()
@@ -184,22 +187,24 @@ def set_menu():
     game_state = 0
 
 class Zvuky():
-    def __init__(self):
+    def __init__(self, audio):
+        self.audio = audio
         self.skok = pygame.mixer.Sound("sprites/Mario Jump - Gaming Sound Effect (HD)20150625.mp3")
+        self.skok.set_volume(0.04)
         self.smrt = pygame.mixer.Sound("sprites/death.mp3")
         self.lets_go = pygame.mixer.Sound("sprites/Lets go.mp3")
         self.wow = pygame.mixer.Sound("sprites/Wow.mp3")
         self.amazing = pygame.mixer.Sound("sprites/Amazing.mp3")
         self.sheesh = pygame.mixer.Sound("sprites/Sheesh.mp3")
     def play(self, zvuk):
-        pygame.mixer.Sound.play(zvuk)
+        if (self.audio): pygame.mixer.Sound.play(zvuk)
 
 pygame.init()
 game_state = 0
 highscore = 0
-zvuky = Zvuky()
-jump_zvuk = pygame.mixer.Sound("sprites/Mario Jump - Gaming Sound Effect (HD)20150625.mp3")
-jump_zvuk.set_volume(0.04)
+zvuky = Zvuky(config["audio"])
+
+
 
 screen = pygame.display.set_mode((800, 800))
 icon = pygame.image.load("sprites/lukas_hlava.png")
@@ -221,7 +226,7 @@ mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent backgro
                 title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_NONE
                 )
 menu = pygame_menu.Menu("", 800, 800, theme=mytheme)
-menu.add.text_input('', default='Luk64')
+menu.add.text_input('', default=config["name"])
 menu.add.button('play', start_the_game)
 menu.add.button('leave', pygame_menu.events.EXIT)
 ###################################################################################
@@ -235,7 +240,8 @@ game_over.add.button("Back to menu", set_menu)
 font = pygame.font.Font('freesansbold.ttf', 32)
 levels = [100, 200, 300, 400, 500, float("inf")]
 predchozi_score = 0
-load_company_intro()
+if (config["company_intro"]):
+    load_company_intro()
 set_menu()
 while True:
     clock.tick(50)
@@ -274,7 +280,7 @@ while True:
         if (not is_lukas_safe()):
             game_state=2
             pygame.mixer.music.stop()
-            pygame.mixer.Sound.play(zvuky.smrt)
+            zvuky.play(zvuky.smrt)
             set_highscore()
             continue
         screen.blit(background, (0, 0))
