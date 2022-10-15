@@ -244,6 +244,9 @@ game_over.add.button("Play", start_the_game)
 game_over.add.button("Back to menu", set_menu)
 
 ###################################################################################
+################### Two players menu ##############################################
+
+###################################################################################
 font = pygame.font.Font('freesansbold.ttf', 32)
 levels = [100, 200, 300, 400, 500, float("inf")]
 predchozi_score = 0
