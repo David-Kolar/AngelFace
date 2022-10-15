@@ -162,6 +162,14 @@ def start_the_game():
     play_battle_music()
     pygame.display.update()
 
+def load_company_intro():
+    image = pygame.image.load("sprites/knot_foundation.png")
+    sound = pygame.mixer.Sound("sprites/company_sound.mp3")
+    pygame.mixer.Sound.play(sound)
+    screen.blit(image, (0, 0))
+    pygame.display.update()
+    pygame.time.wait(11000)
+
 def play_battle_music():
     pygame.mixer.music.load("sprites/overworld_theme.mp3")
     pygame.mixer.music.play(-1)
@@ -173,10 +181,7 @@ def set_menu():
     play_menu_music()
     game_state = 0
 
-pygame.mixer.pre_init(22050, -16, 2, 1024)
 pygame.init()
-pygame.mixer.quit()
-pygame.mixer.init(22050, -16, 2, 1024)
 game_state = 0
 highscore = 0
 jump_zvuk = pygame.mixer.Sound("sprites/Mario Jump - Gaming Sound Effect (HD)20150625.mp3")
@@ -214,6 +219,7 @@ game_over.add.button("Back to menu", set_menu)
 ###################################################################################
 font = pygame.font.Font('freesansbold.ttf', 32)
 levels = [100, 200, 400, 500, 600, 100000]
+load_company_intro()
 set_menu()
 while True:
     clock.tick(50)
@@ -237,7 +243,6 @@ while True:
                 right_pressed = False
     if (space_pressed):
         lukas.jump()
-
 
     if game_state==0:
         screen.fill((0, 0, 0))
