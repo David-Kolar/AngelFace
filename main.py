@@ -185,11 +185,21 @@ def play_battle_music():
     pygame.mixer.music.load("sprites/overworld_theme.mp3")
     pygame.mixer.music.play(-1)
 
-def set_menu():
-    global game_state
-    screen.fill((0, 0, 0))
+def set_one_player_menu():
+    global game_state, active_menu
+    active_menu = one_player
     pygame.display.update()
-    play_menu_music()
+
+def set_two_players_menu():
+    global game_state, active_menu
+    active_menu = two_players
+    pygame.display.update()
+
+def set_menu():
+    global game_state, active_menu
+    active_menu = menu
+    pygame.display.update()
+    if (game_state != 0): play_menu_music()
     game_state = 0
 
 class Zvuky():
@@ -224,7 +234,7 @@ background = pygame.image.load("sprites/background_hogwarts05.png")
 pygame.display.set_caption("#knotakjede")
 clock = pygame.time.Clock()
 ###################### Herni menu #################################################
-background_menu = pygame.image.load("sprites/menu_background.png")
+background_menu = pygame.image.load("sprites/background_hogwarts_new.png")
 mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent background
                 title_font_shadow=True,
                 widget_padding=25,
@@ -233,8 +243,8 @@ mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent backgro
                 )
 menu = pygame_menu.Menu("", 800, 800, theme=mytheme)
 #menu.add.text_input('', default=config["name"])
-menu.add.button('play', start_the_game)
-menu.add.button('two players', start_the_game)
+menu.add.button('one player', set_one_player_menu)
+menu.add.button('two players', set_two_players_menu)
 menu.add.button('leave', pygame_menu.events.EXIT)
 ###################################################################################
 ################### Game Over Menu ################################################
@@ -244,9 +254,19 @@ game_over.add.button("Play", start_the_game)
 game_over.add.button("Back to menu", set_menu)
 
 ###################################################################################
+################### One players menu ##############################################
+one_player = pygame_menu.Menu("", 800, 800, theme=mytheme)
+one_player.add.text_input('', default=config["name"])
+one_player.add.button('play', start_the_game)
+one_player.add.button('back', set_menu)
 ################### Two players menu ##############################################
-
+two_players = pygame_menu.Menu("", 800, 800, theme=mytheme)
+two_players.add.text_input('', default=config["name"])
+two_players.add.text_input('', default=config["name2"])
+two_players.add.button('play', start_the_game)
+two_players.add.button('back', set_menu)
 ###################################################################################
+active_menu = menu
 font = pygame.font.Font('freesansbold.ttf', 32)
 levels = [100, 200, 300, 400, 500, float("inf")]
 predchozi_score = 0
@@ -254,6 +274,7 @@ if (config["cia"]):
     load_cia_warning()
 if (config["company_intro"]):
     load_company_intro()
+play_menu_music()
 set_menu()
 while True:
     clock.tick(50)
@@ -279,10 +300,10 @@ while True:
     if game_state==0:
         screen.fill((0, 0, 0))
         screen.blit(background_menu, (0, 0))
-        menu.draw(screen)
-        if(menu.update(events)):
+        active_menu.draw(screen)
+        if(active_menu.update(events)):
             pygame.display.update()
-            menu.draw(screen)
+            active_menu.draw(screen)
         pygame.display.update()
     elif (game_state==1):
         if (space_pressed):
