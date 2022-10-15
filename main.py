@@ -65,8 +65,8 @@ class Lukas():
         self.pozice = 0
         self.change = 1
         self.jump_velocity = -20
-        img1 = pygame.image.load("sprites/lukas_princezna01.png")
-        img2 = pygame.image.load("sprites/lukas_princezna02.png")
+        img1 = pygame.image.load("sprites/lukas_tycka01.png")
+        img2 = pygame.image.load("sprites/lukas_tycka02.png")
         self.animations = [pygame.transform.scale(img1, (img1.get_width()*3, img1.get_height()*3)), pygame.transform.scale(img2, (img2.get_width()*3, img2.get_height()*3))]
 
     def animation(self):
@@ -175,6 +175,12 @@ def load_company_intro():
     pygame.display.update()
     pygame.time.wait(11000)
 
+def load_cia_warning():
+    image = pygame.image.load("sprites/cia.png")
+    screen.blit(image, (0, 0))
+    pygame.display.update()
+    pygame.time.wait(4000)
+
 def play_battle_music():
     pygame.mixer.music.load("sprites/overworld_theme.mp3")
     pygame.mixer.music.play(-1)
@@ -240,6 +246,8 @@ game_over.add.button("Back to menu", set_menu)
 font = pygame.font.Font('freesansbold.ttf', 32)
 levels = [100, 200, 300, 400, 500, float("inf")]
 predchozi_score = 0
+if (config["cia"]):
+    load_cia_warning()
 if (config["company_intro"]):
     load_company_intro()
 set_menu()
