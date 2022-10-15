@@ -148,7 +148,7 @@ def set_level():
         level += 1
 
 def play_menu_music():
-    pygame.mixer.music.load(f"""sprites/menu_theme{"2" if (randint(0, 8) == 0) else ""}.mp3""")
+    pygame.mixer.music.load(f"""sprites/menu_theme{"2" if (randint(0, 9) == 0) else ""}.mp3""")
     pygame.mixer.music.play(-1)
 
 def start_the_game():
@@ -182,11 +182,18 @@ def set_menu():
     play_menu_music()
     game_state = 0
 
+class Zvuky():
+    def __init__(self):
+        self.skok = pygame.mixer.Sound("sprites/Mario Jump - Gaming Sound Effect (HD)20150625.mp3")
+        self.smrt = pygame.mixer.Sound("sprites/death.mp3")
+
 pygame.init()
 game_state = 0
 highscore = 0
+zvuky = Zvuky()
 jump_zvuk = pygame.mixer.Sound("sprites/Mario Jump - Gaming Sound Effect (HD)20150625.mp3")
 jump_zvuk.set_volume(0.04)
+
 screen = pygame.display.set_mode((800, 800))
 icon = pygame.image.load("sprites/lukas_hlava.png")
 pygame.display.set_icon(icon)
@@ -259,6 +266,7 @@ while True:
         if (not is_lukas_safe()):
             game_state=2
             pygame.mixer.music.stop()
+            pygame.mixer.Sound.play(zvuky.smrt)
             set_highscore()
             continue
         screen.blit(background, (0, 0))
