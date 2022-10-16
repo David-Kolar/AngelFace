@@ -156,8 +156,9 @@ def play_menu_music():
     pygame.mixer.music.play(-1)
 
 def start_the_game():
-    global game_state, lukas, obstacles, start_time, score, level, highscore
+    global game_state, lukas, obstacles, start_time, score, level, highscore, predchozi_score
     zvuky.play(zvuky.select)
+    predchozi_score = 0
     level = 0
     start_time = time()*10
     highscore = load_highscore()
