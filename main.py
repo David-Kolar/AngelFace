@@ -219,8 +219,13 @@ class Zvuky():
         self.amazing = pygame.mixer.Sound("sprites/zvuky/Amazing.mp3")
         self.sheesh = pygame.mixer.Sound("sprites/zvuky/Sheesh.mp3")
         self.select = pygame.mixer.Sound("sprites/zvuky/menu_select_sound.mp3")
+        self.styl_styl = pygame.mixer.Sound("sprites/zvuky/styl styl 2.mp3")
+        self.jezisku = pygame.mixer.Sound("sprites/zvuky/ježíšku na křížku 2.mp3")
+        self.krajta = pygame.mixer.Sound("sprites/zvuky/aj ta krajta 2.mp3")
     def play(self, zvuk):
         if (self.audio): pygame.mixer.Sound.play(zvuk)
+    def nahodny_zvuk_smrti(self):
+        self.play(choice([self.smrt, self.jezisku, self.krajta]))
 
 pygame.init()
 game_state = 0
@@ -320,13 +325,13 @@ while True:
         if (not is_lukas_safe()):
             game_state=2
             pygame.mixer.music.stop()
-            zvuky.play(zvuky.smrt)
+            zvuky.nahodny_zvuk_smrti()
             set_highscore()
             continue
         screen.blit(background, (0, 0))
         score = int((time()*10 - start_time))
         if ((score) % 100 == 0 and score != predchozi_score):
-            zvuk = [zvuky.wow, zvuky.amazing, zvuky.sheesh]
+            zvuk = [zvuky.wow, zvuky.amazing, zvuky.sheesh, zvuky.styl_styl]
             zvuky.play(zvuk[(score//100)%len(zvuk)])
             predchozi_score = score
         text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
