@@ -156,6 +156,7 @@ def play_menu_music():
 
 def start_the_game():
     global game_state, lukas, obstacles, start_time, score, level, highscore
+    zvuky.play(zvuky.select)
     level = 0
     start_time = time()*10
     highscore = load_highscore()
@@ -187,16 +188,19 @@ def play_battle_music():
 
 def set_one_player_menu():
     global game_state, active_menu
+    zvuky.play(zvuky.select)
     active_menu = one_player
     pygame.display.update()
 
 def set_two_players_menu():
     global game_state, active_menu
+    zvuky.play(zvuky.select)
     active_menu = two_players
     pygame.display.update()
 
 def set_menu():
     global game_state, active_menu
+    if (not beggining): zvuky.play(zvuky.select)
     active_menu = menu
     pygame.display.update()
     if (game_state != 0): play_menu_music()
@@ -212,6 +216,7 @@ class Zvuky():
         self.wow = pygame.mixer.Sound("sprites/Wow.mp3")
         self.amazing = pygame.mixer.Sound("sprites/Amazing.mp3")
         self.sheesh = pygame.mixer.Sound("sprites/Sheesh.mp3")
+        self.select = pygame.mixer.Sound("sprites/menu_select_sound.mp3")
     def play(self, zvuk):
         if (self.audio): pygame.mixer.Sound.play(zvuk)
 
@@ -219,7 +224,7 @@ pygame.init()
 game_state = 0
 highscore = 0
 zvuky = Zvuky(config["audio"])
-
+beggining = True
 
 
 screen = pygame.display.set_mode((800, 800))
@@ -337,4 +342,5 @@ while True:
             pygame.display.update()
             game_over.draw(screen)
         pygame.display.update()
+    beggining = False
 
