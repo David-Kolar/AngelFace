@@ -11,6 +11,7 @@ from pygame.locals import *
 from random import choice, randint
 from pygame_menu.locals import *
 import toml
+from os.path import abspath
 
 def load_config():
     return toml.load("config.toml")
@@ -272,7 +273,7 @@ two_players.add.button('play', start_the_game)
 two_players.add.button('back', set_menu)
 ###################################################################################
 active_menu = menu
-font = pygame.font.Font('freesansbold.ttf', 32)
+font = pygame.font.Font(abspath("sprites/pixel_font.ttf"), 32)
 levels = [100, 200, 300, 400, 500, float("inf")]
 predchozi_score = 0
 if (config["cia"]):
