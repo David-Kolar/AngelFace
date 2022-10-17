@@ -233,7 +233,10 @@ highscore = 0
 zvuky = Zvuky(config["audio"])
 beggining = True
 
-
+medaile = [pygame.image.load(f"sprites/grafika/medaile_{val}.png") for val in ["bronz", "stribro", "zlato", "modra", "diamond"]]
+for i in range(len(medaile)):
+    medaile[i] = pygame.transform.scale(medaile[i], (medaile[i].get_width()/3, medaile[i].get_height()/3))
+medaile_score = [100, 300, 600, 1000, 1500]
 screen = pygame.display.set_mode((800, 800))
 icon = pygame.image.load("sprites/grafika/lukas_hlava.png")
 pygame.display.set_icon(icon)
@@ -348,6 +351,9 @@ while True:
         if (game_over.update(events)):
             pygame.display.update()
             game_over.draw(screen)
+        for i, s in enumerate(medaile_score):
+            if (score > s):
+                screen.blit(medaile[i], (365, 520))
         pygame.display.update()
     beggining = False
 
