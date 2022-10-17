@@ -260,7 +260,7 @@ menu.add.button('two players', set_two_players_menu)
 menu.add.button('leave', pygame_menu.events.EXIT)
 ###################################################################################
 ################### Game Over Menu ################################################
-game_over_background_image = pygame.image.load("sprites/grafika/game_over.png")
+game_over_background_image = pygame.image.load("sprites/grafika/game_over_2.png")
 game_over = pygame_menu.Menu("", 800, 800, theme=mytheme)
 game_over.add.button("Play", start_the_game)
 game_over.add.button("Back to menu", set_menu)
