@@ -353,7 +353,7 @@ while True:
             game_over.draw(screen)
         for i, s in enumerate(medaile_score):
             if (score > s):
-                screen.blit(medaile[i], (365, 520))
+                screen.blit(medaile[i], (200 + i*(medaile[i].get_width() + 20), 520))
         pygame.display.update()
     beggining = False
 
