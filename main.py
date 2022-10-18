@@ -170,7 +170,16 @@ def start_the_game():
     play_battle_music()
     pygame.display.update()
 
+def load_knotstar():
+    image = pygame.image.load("sprites/grafika/knotstar_games.png")
+    sound = pygame.mixer.Sound("sprites/zvuky/knotstar_sound.mp3")
+    pygame.mixer.Sound.play(sound)
+    screen.blit(image, (0, 0))
+    pygame.display.update()
+    pygame.time.wait(13000)
+
 def load_company_intro():
+    screen.fill((255, 255, 255))
     image = pygame.image.load("sprites/grafika/knot_foundation.png")
     sound = pygame.mixer.Sound("sprites/zvuky/company_sound.mp3")
     pygame.mixer.Sound.play(sound)
@@ -289,6 +298,7 @@ if (config["cia"]):
     load_cia_warning()
 if (config["company_intro"]):
     load_company_intro()
+    load_knotstar()
 play_menu_music()
 set_menu()
 while True:
