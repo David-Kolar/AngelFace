@@ -70,20 +70,36 @@ class Lukas():
         img2 = pygame.image.load("sprites/grafika/lukas_tycka02.png")
         self.animations = [pygame.transform.scale(img1, (img1.get_width()*3, img1.get_height()*3)), pygame.transform.scale(img2, (img2.get_width()*3, img2.get_height()*3))]
 
-    def animation(self):
+    def is_safe(self):
+        for obstacle in obstacles.obstacles:
+            # print(lukas.y, lukas.y + lukas.height, obstacle.y, obstacle.y+obstacle.height)
+            if not (check_interval(self.x, self.x + self.width, obstacle.x,
+                                   obstacle.x + obstacle.width) or check_interval(self.y, self.y + self.height,
+                                                                                  obstacle.y,
+                                                                                  obstacle.y + obstacle.height)):
+                return False
+        return True
+    def animation(self, standart_control=True):
+        right = keyboard.d
+        if (standart_control): right = keyboard.right
         if not(self.timer_animation):
             if (not self.falling): self.pozice = (self.pozice + 1)%2
             self.animation_delay = self.default_animation_delays[1]
-            if (right_pressed):
+            if (right):
                 self.animation_delay = self.default_animation_delays[2]
             self.timer_animation.set(self.animation_delay)
 
-    def move(self):
+    def move(self, standart_control=True):
+        right = keyboard.d
+        left = keyboard.a
+        if (standart_control):
+            right = keyboard.right
+            left = keyboard.left
         if not(self.timer_move):
             self.velocity += self.change
-            if (left_pressed) and (self.x > 0):
+            if (left) and (self.x > 0):
                 self.x -= self.x_velocity
-            if (right_pressed and self.x <= 750):
+            if (right and self.x <= 750):
                 self.x += self.x_velocity
             if (self.y + self.velocity > self.border):
                 self.y = self.border
@@ -96,7 +112,6 @@ class Lukas():
         return False
 
     def print(self):
-        self.animation()
         screen.blit(self.animations[self.pozice], (self.x, self.y))
 
     def jump(self):
@@ -104,6 +119,12 @@ class Lukas():
             zvuky.play(zvuky.skok)
             self.velocity = self.jump_velocity
             self.falling = True
+
+    def set_skin(self):
+        img1 = pygame.image.load("sprites/grafika/lukas_princezna01.png")
+        img2 = pygame.image.load("sprites/grafika/lukas_princezna02.png")
+        self.animations = [pygame.transform.scale(img1, (img1.get_width() * 3, img1.get_height() * 3)),
+                           pygame.transform.scale(img2, (img2.get_width() * 3, img2.get_height() * 3))]
 
 class Obstacles():
     def __init__(self):
@@ -156,8 +177,9 @@ def play_menu_music():
     pygame.mixer.music.play(-1)
 
 def start_the_game():
-    global game_state, lukas, obstacles, start_time, score, level, highscore, predchozi_score
+    global game_state, lukas, obstacles, start_time, score, level, highscore, predchozi_score, singleplayer
     zvuky.play(zvuky.select)
+    singleplayer = True
     predchozi_score = 0
     level = 0
     start_time = time()*10
@@ -167,6 +189,24 @@ def start_the_game():
     for i in range(5): obstacles.add_random()
     zvuky.play(zvuky.lets_go)
     game_state = 1
+    play_battle_music()
+    pygame.display.update()
+
+def start_the_multiplayer():
+    global game_state, lukas, obstacles, start_time, score, level, highscore, predchozi_score, princezna, singleplayer
+    singleplayer = False
+    zvuky.play(zvuky.select)
+    predchozi_score = 0
+    level = 0
+    start_time = time() * 10
+    highscore = load_highscore()
+    lukas = Lukas(100, y_border)
+    princezna = Lukas(100, y_border)
+    princezna.set_skin()
+    obstacles = Obstacles()
+    for i in range(5): obstacles.add_random()
+    zvuky.play(zvuky.lets_go)
+    game_state = 2
     play_battle_music()
     pygame.display.update()
 
@@ -246,6 +286,12 @@ class Zvuky():
     def nahodny_zvuk_smrti(self):
         self.play(choice([self.smrt, self.jezisku, self.krajta]))
 
+class Keyboard():
+    def __init__(self):
+        for i in ("space", "up", "left", "right", "w", "a", "d"):
+            exec(f"self.{i} = False")
+
+keyboard = Keyboard()
 pygame.init()
 game_state = 0
 highscore = 0
@@ -261,9 +307,6 @@ icon = pygame.image.load("sprites/grafika/lukas_hlava.png")
 pygame.display.set_icon(icon)
 y_border = 370
 running = True
-space_pressed = False
-left_pressed = False
-right_pressed = False
 background = pygame.image.load("sprites/grafika/background_hogwarts05.png")
 pygame.display.set_caption("#knotakjede")
 clock = pygame.time.Clock()
@@ -286,6 +329,11 @@ game_over_background_image = pygame.image.load("sprites/grafika/game_over_2.png"
 game_over = pygame_menu.Menu("", 800, 800, theme=mytheme)
 game_over.add.button("Play", start_the_game)
 game_over.add.button("Back to menu", set_menu)
+################### Game Over Multiplayer Menu ################################################
+game_over_background_image = pygame.image.load("sprites/grafika/game_over_2.png")
+game_over_multiplayer = pygame_menu.Menu("", 800, 800, theme=mytheme)
+game_over_multiplayer.add.button("Play", start_the_multiplayer)
+game_over_multiplayer.add.button("Back to menu", set_menu)
 
 ###################################################################################
 ################### One players menu ##############################################
@@ -297,7 +345,7 @@ one_player.add.button('back', set_menu)
 two_players = pygame_menu.Menu("", 800, 800, theme=mytheme)
 two_players.add.text_input('', default=config["name"])
 two_players.add.text_input('', default=config["name2"])
-two_players.add.button('play', start_the_game)
+two_players.add.button('play', start_the_multiplayer)
 two_players.add.button('back', set_menu)
 ###################################################################################
 active_menu = menu
@@ -311,6 +359,8 @@ if (config["company_intro"]):
     load_knotstar()
 play_menu_music()
 set_menu()
+score = 0
+singleplayer = True
 while True:
     clock.tick(50)
     events = pygame.event.get()
@@ -318,19 +368,23 @@ while True:
         if event.type == pygame.QUIT:
             exit()
         if event.type == pygame.KEYDOWN:
-            if (event.key == pygame.K_SPACE):
-                space_pressed = True
-            if (event.key == pygame.K_LEFT):
-                left_pressed = True
-            if (event.key == pygame.K_RIGHT):
-                right_pressed = True
+            pressed = True
         if event.type == pygame.KEYUP:
-            if (event.key == pygame.K_SPACE):
-                space_pressed = False
+            pressed = False
+        if (event.type == pygame.KEYDOWN or event.type == pygame.KEYUP):
+            if (event.key == pygame.K_UP):
+                keyboard.up = pressed
             if (event.key == pygame.K_LEFT):
-                left_pressed = False
+                keyboard.left = pressed
             if (event.key == pygame.K_RIGHT):
-                right_pressed = False
+                keyboard.right = pressed
+            if (event.key == pygame.K_w):
+                keyboard.w = pressed
+            if (event.key == pygame.K_a):
+                keyboard.a = pressed
+            if (event.key == pygame.K_d):
+                keyboard.d = pressed
+
 
     if game_state==0:
         screen.fill((0, 0, 0))
@@ -341,12 +395,12 @@ while True:
             active_menu.draw(screen)
         pygame.display.update()
     elif (game_state==1):
-        if (space_pressed):
+        if (keyboard.up):
             lukas.jump()
         lukas.move()
         obstacles.move()
-        if (not is_lukas_safe()):
-            game_state=2
+        if (not lukas.is_safe()):
+            game_state=3
             pygame.mixer.music.stop()
             zvuky.nahodny_zvuk_smrti()
             set_highscore()
@@ -362,18 +416,55 @@ while True:
         set_level()
         screen.blit(text, (20, 20))
         screen.blit(h_text, (20, 54))
+        lukas.animation()
         lukas.print()
         obstacles.print()
         pygame.display.update()
+
+    elif(game_state==2):
+        if (keyboard.up):
+            lukas.jump()
+        if (keyboard.w):
+            princezna.jump()
+        lukas.move()
+        princezna.move(False)
+        obstacles.move()
+        if (not princezna.is_safe() or not lukas.is_safe()):
+            game_state=3
+            pygame.mixer.music.stop()
+            zvuky.nahodny_zvuk_smrti()
+            set_highscore()
+            continue
+        screen.blit(background, (0, 0))
+        score = int((time() * 10 - start_time))
+        if ((score) % 100 == 0 and score != predchozi_score):
+            zvuk = [zvuky.wow, zvuky.amazing, zvuky.sheesh, zvuky.styl_styl]
+            zvuky.play(zvuk[(score//100)%len(zvuk)])
+            predchozi_score = score
+        text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
+        h_text = font.render("{:0>5d}".format(highscore), True, (255, 255, 255))
+        set_level()
+        text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
+        h_text = font.render("{:0>5d}".format(highscore), True, (255, 255, 255))
+        screen.blit(text, (20, 20))
+        screen.blit(h_text, (20, 54))
+        lukas.print()
+        lukas.animation()
+        princezna.animation(False)
+        princezna.print()
+        obstacles.print()
+        pygame.display.update()
     else:
+        game_over_menu = game_over_multiplayer
+        if (singleplayer):
+            game_over_menu = game_over
         screen.blit(game_over_background_image, (0, 0))
-        game_over.draw(screen)
-        if (game_over.update(events)):
+        game_over_menu.draw(screen)
+        if (game_over_menu.update(events)):
             pygame.display.update()
-            game_over.draw(screen)
+            game_over_menu.draw(screen)
         for i, s in enumerate(medaile_score):
             if (score > s):
                 screen.blit(medaile[i], (200 + i*(medaile[i].get_width() + 20), 520))
         pygame.display.update()
     beggining = False
-
