@@ -196,7 +196,7 @@ def start_the_multiplayer():
     global game_state, lukas, obstacles, start_time, score, level, highscore, predchozi_score, princezna, singleplayer, name1, name2, title1, title2
     name1 = namebox1.get_value().upper()
     name2 = namebox2.get_value().upper()
-    color = (255, 255, 255)
+    color = (0, 55, 55)
     title1 = name_font.render(name1, True, color)
     title2 = name_font.render(name2, True, color)
     singleplayer = False
