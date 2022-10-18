@@ -193,7 +193,12 @@ def start_the_game():
     pygame.display.update()
 
 def start_the_multiplayer():
-    global game_state, lukas, obstacles, start_time, score, level, highscore, predchozi_score, princezna, singleplayer
+    global game_state, lukas, obstacles, start_time, score, level, highscore, predchozi_score, princezna, singleplayer, name1, name2, title1, title2
+    name1 = namebox1.get_value().upper()
+    name2 = namebox2.get_value().upper()
+    color = (255, 255, 255)
+    title1 = name_font.render(name1, True, color)
+    title2 = name_font.render(name2, True, color)
     singleplayer = False
     zvuky.play(zvuky.select)
     predchozi_score = 0
@@ -330,7 +335,7 @@ game_over = pygame_menu.Menu("", 800, 800, theme=mytheme)
 game_over.add.button("Play", start_the_game)
 game_over.add.button("Back to menu", set_menu)
 ################### Game Over Multiplayer Menu ################################################
-game_over_background_image = pygame.image.load("sprites/grafika/game_over_2.png")
+game_over_background_image_multiplayer = pygame.image.load("sprites/grafika/game_over_3.png")
 game_over_multiplayer = pygame_menu.Menu("", 800, 800, theme=mytheme)
 game_over_multiplayer.add.button("Play", start_the_multiplayer)
 game_over_multiplayer.add.button("Back to menu", set_menu)
@@ -343,13 +348,15 @@ one_player.add.button('play', start_the_game)
 one_player.add.button('back', set_menu)
 ################### Two players menu ##############################################
 two_players = pygame_menu.Menu("", 800, 800, theme=mytheme)
-two_players.add.text_input('', default=config["name"])
-two_players.add.text_input('', default=config["name2"])
+namebox1 = two_players.add.text_input('', default="Princezna")
+namebox2 = two_players.add.text_input('', default="Lukas")
 two_players.add.button('play', start_the_multiplayer)
 two_players.add.button('back', set_menu)
 ###################################################################################
 active_menu = menu
 font = pygame.font.Font(abspath("sprites/pismo/pixel_font.ttf"), 32)
+game_over_font = pygame.font.Font(abspath("sprites/pismo/pixel_font.ttf"),45)
+name_font = pygame.font.Font(abspath("sprites/pismo/pixel_font.ttf"), 14)
 levels = [100, 200, 300, 400, 500, float("inf")]
 predchozi_score = 0
 if (config["cia"]):
@@ -430,6 +437,9 @@ while True:
         princezna.move(False)
         obstacles.move()
         if (not princezna.is_safe() or not lukas.is_safe()):
+            message = name1
+            if (not princezna.is_safe()):
+                message = name2
             game_state=3
             pygame.mixer.music.stop()
             zvuky.nahodny_zvuk_smrti()
@@ -452,13 +462,19 @@ while True:
         lukas.animation()
         princezna.animation(False)
         princezna.print()
+        screen.blit(title1, (princezna.x, princezna.y - 10))
+        screen.blit(title2, (lukas.x, lukas.y - 15))
         obstacles.print()
         pygame.display.update()
     else:
         game_over_menu = game_over_multiplayer
+        screen.blit(game_over_background_image_multiplayer, (0, 0))
         if (singleplayer):
             game_over_menu = game_over
-        screen.blit(game_over_background_image, (0, 0))
+            screen.blit(game_over_background_image, (0, 0))
+        else:
+            text = game_over_font.render(f"{message} won!".upper(), True, (50, 50, 50))
+            screen.blit(text, (50, 100))
         game_over_menu.draw(screen)
         if (game_over_menu.update(events)):
             pygame.display.update()
