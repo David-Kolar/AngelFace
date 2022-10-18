@@ -348,8 +348,8 @@ one_player.add.button('play', start_the_game)
 one_player.add.button('back', set_menu)
 ################### Two players menu ##############################################
 two_players = pygame_menu.Menu("", 800, 800, theme=mytheme)
-namebox1 = two_players.add.text_input('', default="Princezna")
-namebox2 = two_players.add.text_input('', default="Lukas")
+namebox1 = two_players.add.text_input('', default="Levy hrac")
+namebox2 = two_players.add.text_input('', default="Pravy hrac")
 two_players.add.button('play', start_the_multiplayer)
 two_players.add.button('back', set_menu)
 ###################################################################################
@@ -474,7 +474,7 @@ while True:
             screen.blit(game_over_background_image, (0, 0))
         else:
             text = game_over_font.render(f"{message} won!".upper(), True, (50, 50, 50))
-            screen.blit(text, (50, 100))
+            screen.blit(text, (50, 130))
         game_over_menu.draw(screen)
         if (game_over_menu.update(events)):
             pygame.display.update()
