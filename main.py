@@ -235,7 +235,7 @@ def start_the_multiplayer():
     predchozi_score = 0
     level = 0
     start_time = time() * 10
-    highscore = load_data()
+    highscore = load_data()[0]
     lukas = Lukas(100, y_border)
     princezna = Lukas(100, y_border)
     princezna.set_skin_princezna()
@@ -504,8 +504,6 @@ while True:
         text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
         h_text = font.render("{:0>5d}".format(highscore), True, (255, 255, 255))
         set_level()
-        text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
-        h_text = font.render("{:0>5d}".format(highscore), True, (255, 255, 255))
         screen.blit(text, (20, 20))
         screen.blit(h_text, (20, 54))
         lukas.print()
