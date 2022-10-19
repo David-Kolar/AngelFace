@@ -120,11 +120,20 @@ class Lukas():
             self.velocity = self.jump_velocity
             self.falling = True
 
-    def set_skin(self):
+    def set_skin_princezna(self):
         img1 = pygame.image.load("sprites/grafika/lukas_princezna01.png")
         img2 = pygame.image.load("sprites/grafika/lukas_princezna02.png")
         self.animations = [pygame.transform.scale(img1, (img1.get_width() * 3, img1.get_height() * 3)),
                            pygame.transform.scale(img2, (img2.get_width() * 3, img2.get_height() * 3))]
+    def set_skin_lukasenko(self):
+        img1 = pygame.image.load("sprites/grafika/lukasenko01.png")
+        img2 = pygame.image.load("sprites/grafika/lukasenko02.png")
+        self.animations = [pygame.transform.scale(img1, (img1.get_width() * 3, img1.get_height() * 3)),
+                           pygame.transform.scale(img2, (img2.get_width() * 3, img2.get_height() * 3))]
+    def set_skin_dino(self):
+        img1 = pygame.image.load("sprites/grafika/dino01.png")
+        img2 = pygame.image.load("sprites/grafika/dino02.png")
+        self.animations = [img1, img2]
 
 class Obstacles():
     def __init__(self):
@@ -185,6 +194,12 @@ def start_the_game():
     start_time = time()*10
     highscore = load_highscore()
     lukas = Lukas(100, y_border)
+    if (namebox_single_player.get_value()=="angelface"):
+        lukas.set_skin_princezna()
+    if (namebox_single_player.get_value()=="dino"):
+        lukas.set_skin_dino()
+    if (namebox_single_player.get_value()=="lukasenko"):
+        lukas.set_skin_lukasenko()
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
     zvuky.play(zvuky.lets_go)
@@ -207,7 +222,7 @@ def start_the_multiplayer():
     highscore = load_highscore()
     lukas = Lukas(100, y_border)
     princezna = Lukas(100, y_border)
-    princezna.set_skin()
+    princezna.set_skin_princezna()
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
     zvuky.play(zvuky.lets_go)
@@ -296,6 +311,15 @@ class Keyboard():
         for i in ("space", "up", "left", "right", "w", "a", "d"):
             exec(f"self.{i} = False")
 
+def check_namebox(namebox):
+    val = namebox.get_value()
+    if (len(val) > name_limit):
+        namebox.set_default_value(val[0:name_limit])
+
+def check_nameboxes(nameboxes):
+    for namebox in nameboxes: check_namebox(namebox)
+
+name_limit = 12
 keyboard = Keyboard()
 pygame.init()
 game_state = 0
@@ -343,7 +367,7 @@ game_over_multiplayer.add.button("Back to menu", set_menu)
 ###################################################################################
 ################### One players menu ##############################################
 one_player = pygame_menu.Menu("", 800, 800, theme=mytheme)
-one_player.add.text_input('', default=config["name"])
+namebox_single_player = one_player.add.text_input('', default=config["name"])
 one_player.add.button('play', start_the_game)
 one_player.add.button('back', set_menu)
 ################### Two players menu ##############################################
@@ -394,6 +418,7 @@ while True:
 
 
     if game_state==0:
+        check_nameboxes([namebox1, namebox2, namebox_single_player])
         screen.fill((0, 0, 0))
         screen.blit(background_menu, (0, 0))
         active_menu.draw(screen)
