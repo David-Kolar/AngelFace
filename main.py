@@ -29,13 +29,6 @@ class Timer():
 def check_interval(a0, a1, b0, b1):
     return (a1 <= b0)or(b1 <= a0)
 
-def is_lukas_safe():
-    for obstacle in obstacles.obstacles:
-       #print(lukas.y, lukas.y + lukas.height, obstacle.y, obstacle.y+obstacle.height)
-       if not (check_interval(lukas.x, lukas.x + lukas.width, obstacle.x, obstacle.x+obstacle.width) or check_interval(lukas.y, lukas.y + lukas.height, obstacle.y, obstacle.y+obstacle.height)):
-            return False
-    return True
-
 def load_highscore():
     with open("data") as file:
         cislo = int(file.read())
@@ -71,13 +64,19 @@ class Lukas():
         self.animations = [pygame.transform.scale(img1, (img1.get_width()*3, img1.get_height()*3)), pygame.transform.scale(img2, (img2.get_width()*3, img2.get_height()*3))]
 
     def is_safe(self):
-        for obstacle in obstacles.obstacles:
+        global number_of_coins
+        for key, obstacle in enumerate(obstacles.obstacles):
             # print(lukas.y, lukas.y + lukas.height, obstacle.y, obstacle.y+obstacle.height)
             if not (check_interval(self.x, self.x + self.width, obstacle.x,
                                    obstacle.x + obstacle.width) or check_interval(self.y, self.y + self.height,
                                                                                   obstacle.y,
                                                                                   obstacle.y + obstacle.height)):
-                return False
+                if (obstacle.dangerous):
+                    return False
+                del obstacles.obstacles[key]
+                obstacles.add_random()
+                number_of_coins += 1
+                zvuky.play(zvuky.coins)
         return True
     def animation(self, standart_control=True):
         right = keyboard.d
@@ -141,16 +140,31 @@ class Obstacles():
         self.timer = Timer()
         self.delay = 10
         self.image = pygame.image.load("sprites/grafika/cactus_scaled.png")
+        self.coin = pygame.image.load("sprites/grafika/bitcoin.png")
         self.velocities = [-5, -7, -8, -10, -12, -14]
         self.timer.set(self.delay)
 
-    def add_random(self):
+    def add_random_coin(self):
+        y = 450
+        if (not len(self.obstacles)):
+            x = 800
+        else:
+            x = self.obstacles[-1].x + choice([100, 200])
+        self.obstacles.append(Item(x, y, self.coin, False))
+
+    def add_random_cactus(self):
         y = 425
         if (not len(self.obstacles)):
             x = 800
         else:
             x = self.obstacles[-1].x + choice([300, 400, 600])
-        self.obstacles.append(Obstacle(x, y, self.image))
+        self.obstacles.append(Item(x, y, self.image))
+
+    def add_random(self):
+        if (randint(0, 5)==0) and singleplayer:
+            self.add_random_coin()
+        else:
+            self.add_random_cactus()
 
     def move(self):
         if not(self.timer):
@@ -166,14 +180,15 @@ class Obstacles():
     def print(self):
         for obstacle in self.obstacles:
             screen.blit(obstacle.image, (obstacle.x, obstacle.y))
-
-class Obstacle():
-    def __init__(self, x, y, img):
+        
+class Item():
+    def __init__(self, x, y, img, dangerous=True):
         self.x = x
         self.y = y
         self.width = img.get_width()
         self.height = img.get_height()
         self.image = img
+        self.dangerous = dangerous
 
 
 def set_level():
@@ -301,6 +316,7 @@ class Zvuky():
         self.styl_styl = pygame.mixer.Sound("sprites/zvuky/styl styl 2.mp3")
         self.jezisku = pygame.mixer.Sound("sprites/zvuky/ježíšku na křížku 2.mp3")
         self.krajta = pygame.mixer.Sound("sprites/zvuky/aj ta krajta 2.mp3")
+        self.coins = pygame.mixer.Sound("sprites/zvuky/coin_collect.mp3")
     def play(self, zvuk):
         if (self.audio): pygame.mixer.Sound.play(zvuk)
     def nahodny_zvuk_smrti(self):
@@ -326,7 +342,7 @@ game_state = 0
 highscore = 0
 zvuky = Zvuky(config["audio"])
 beggining = True
-
+number_of_coins = 0
 medaile = [pygame.image.load(f"sprites/grafika/medaile_{val}.png") for val in ["bronz", "stribro", "zlato", "modra", "diamond"]]
 for i in range(len(medaile)):
     medaile[i] = pygame.transform.scale(medaile[i], (medaile[i].get_width()/3, medaile[i].get_height()/3))
@@ -382,6 +398,13 @@ font = pygame.font.Font(abspath("sprites/pismo/pixel_font.ttf"), 32)
 game_over_font = pygame.font.Font(abspath("sprites/pismo/pixel_font.ttf"),45)
 name_font = pygame.font.Font(abspath("sprites/pismo/pixel_font.ttf"), 14)
 levels = [100, 200, 300, 400, 500, float("inf")]
+
+
+def print_coins():
+    text = font.render("{:0>5d}".format(number_of_coins), True, (255, 255, 255))
+    screen.blit(text, (600, 20))
+    screen.blit(obstacles.coin, (562, 17))
+
 predchozi_score = 0
 if (config["cia"]):
     load_cia_warning()
@@ -438,6 +461,7 @@ while True:
             set_highscore()
             continue
         screen.blit(background, (0, 0))
+        print_coins()
         score = int((time()*10 - start_time))
         if ((score) % 100 == 0 and score != predchozi_score):
             zvuk = [zvuky.wow, zvuky.amazing, zvuky.sheesh, zvuky.styl_styl]
