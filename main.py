@@ -6,6 +6,7 @@ Email: kolard@jirovcovka.net
 import pygame
 import pygame_menu
 from time import time
+import sqlite3
 from collections import deque
 from pygame.locals import *
 from random import choice, randint
@@ -29,16 +30,16 @@ class Timer():
 def check_interval(a0, a1, b0, b1):
     return (a1 <= b0)or(b1 <= a0)
 
-def load_highscore():
+def load_data():
     with open("data") as file:
-        cislo = int(file.read())
-    return cislo
+        data = file.read()
+    highscore, coins = data.split("\n")
+    return int(highscore), int(coins)
 
-def set_highscore():
-    highscore = load_highscore()
-    if (score > highscore):
-        with open("data", "w") as file:
-            file.write(str(score))
+def set_highscore_coins():
+    highscore = load_data()[0]
+    with open("data", "w") as file:
+        file.write(str(max(highscore, score)) + "\n" + str(number_of_coins))
 
 class Lukas():
     def __init__(self, x, y):
@@ -207,7 +208,7 @@ def start_the_game():
     predchozi_score = 0
     level = 0
     start_time = time()*10
-    highscore = load_highscore()
+    highscore, coins = load_data()
     lukas = Lukas(100, y_border)
     if (namebox_single_player.get_value()=="angelface"):
         lukas.set_skin_princezna()
@@ -234,7 +235,7 @@ def start_the_multiplayer():
     predchozi_score = 0
     level = 0
     start_time = time() * 10
-    highscore = load_highscore()
+    highscore = load_data()
     lukas = Lukas(100, y_border)
     princezna = Lukas(100, y_border)
     princezna.set_skin_princezna()
@@ -342,7 +343,7 @@ game_state = 0
 highscore = 0
 zvuky = Zvuky(config["audio"])
 beggining = True
-number_of_coins = 0
+number_of_coins = load_data()[1]
 medaile = [pygame.image.load(f"sprites/grafika/medaile_{val}.png") for val in ["bronz", "stribro", "zlato", "modra", "diamond"]]
 for i in range(len(medaile)):
     medaile[i] = pygame.transform.scale(medaile[i], (medaile[i].get_width()/3, medaile[i].get_height()/3))
@@ -458,7 +459,7 @@ while True:
             game_state=3
             pygame.mixer.music.stop()
             zvuky.nahodny_zvuk_smrti()
-            set_highscore()
+            set_highscore_coins()
             continue
         screen.blit(background, (0, 0))
         print_coins()
@@ -492,7 +493,7 @@ while True:
             game_state=3
             pygame.mixer.music.stop()
             zvuky.nahodny_zvuk_smrti()
-            set_highscore()
+            set_highscore_coins()
             continue
         screen.blit(background, (0, 0))
         score = int((time() * 10 - start_time))
