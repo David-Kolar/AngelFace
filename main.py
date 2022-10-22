@@ -6,6 +6,7 @@ Email: kolard@jirovcovka.net
 """
 import pygame
 import pygame_menu
+
 from time import time
 import sqlite3
 from collections import deque
@@ -14,7 +15,6 @@ from random import choice, randint
 from pygame_menu.locals import *
 import toml
 from os.path import abspath
-
 def load_config():
     return toml.load("config.toml")
 config = load_config()
@@ -417,11 +417,16 @@ play_menu_music()
 set_menu()
 score = 0
 pygame.display.flip()
-pygame.mouse.set_visible(False)
 singleplayer = True
+pygame.mouse.set_visible(False)
+mys_normal = pygame.image.load("sprites/grafika/mys.png")
+mys_klik = pygame.image.load("sprites/grafika/mys_click.png")
 while True:
     clock.tick(50)
     events = pygame.event.get()
+    mys = mys_normal
+    if pygame.mouse.get_pressed()[0]:
+        mys = mys_klik
     for event in events:
         if event.type == pygame.QUIT:
             exit()
@@ -442,16 +447,16 @@ while True:
                 keyboard.a = pressed
             if (event.key == pygame.K_d):
                 keyboard.d = pressed
-
+    pos = pygame.mouse.get_pos()
 
     if game_state==0:
         check_nameboxes([namebox1, namebox2, namebox_single_player])
-        screen.fill((0, 0, 0))
         screen.blit(background_menu, (0, 0))
         active_menu.draw(screen)
         if(active_menu.update(events)):
             pygame.display.update()
             active_menu.draw(screen)
+        screen.blit(mys, pos)
         pygame.display.update()
     elif (game_state==1):
         if (keyboard.up):
@@ -463,6 +468,7 @@ while True:
             pygame.mixer.music.stop()
             zvuky.nahodny_zvuk_smrti()
             set_highscore_coins()
+            smrt_pozadi = screen.copy()
             continue
         screen.blit(background, (0, 0))
         print_coins()
@@ -497,6 +503,7 @@ while True:
             pygame.mixer.music.stop()
             zvuky.nahodny_zvuk_smrti()
             set_highscore_coins()
+            smrt_pozadi = screen.copy()
             continue
         screen.blit(background, (0, 0))
         score = int((time() * 10 - start_time))
@@ -518,6 +525,7 @@ while True:
         obstacles.print()
         pygame.display.update()
     else:
+        screen.blit(smrt_pozadi, (0, 0))
         game_over_menu = game_over_multiplayer
         screen.blit(game_over_background_image_multiplayer, (0, 0))
         if (singleplayer):
@@ -530,8 +538,10 @@ while True:
         if (game_over_menu.update(events)):
             pygame.display.update()
             game_over_menu.draw(screen)
+        pygame.display.update()
         for i, s in enumerate(medaile_score):
             if (score > s):
                 screen.blit(medaile[i], (200 + i*(medaile[i].get_width() + 20), 520))
+        screen.blit(mys, pos)
         pygame.display.update()
     beggining = False
