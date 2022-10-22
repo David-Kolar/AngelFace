@@ -417,7 +417,7 @@ play_menu_music()
 set_menu()
 score = 0
 pygame.display.flip()
-pygame.mouse.set_cursor(pygame.cursors.diamond)
+pygame.mouse.set_visible(False)
 singleplayer = True
 while True:
     clock.tick(50)
