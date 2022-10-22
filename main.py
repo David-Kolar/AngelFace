@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Program: Spaghetti code hra s Lukášem bez komentářů.
 Autor: David Kolář
@@ -415,6 +416,8 @@ if (config["company_intro"]):
 play_menu_music()
 set_menu()
 score = 0
+pygame.display.flip()
+pygame.mouse.set_cursor(pygame.cursors.diamond)
 singleplayer = True
 while True:
     clock.tick(50)
