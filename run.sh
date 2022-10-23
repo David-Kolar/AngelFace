@@ -1,1 +1,1 @@
-./moduly/bin/python3.9 main.py
+./prostredi/bin/python3.9 main.py
