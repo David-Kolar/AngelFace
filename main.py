@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/david/Programming/Python/AngelFace/prostredi/bin/python3.9
 """
 Program: Spaghetti code hra s Lukášem bez komentářů.
 Autor: David Kolář
