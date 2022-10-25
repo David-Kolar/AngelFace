@@ -314,6 +314,8 @@ class Zvuky():
         self.wow = pygame.mixer.Sound("sprites/zvuky/Wow.mp3")
         self.amazing = pygame.mixer.Sound("sprites/zvuky/Amazing.mp3")
         self.sheesh = pygame.mixer.Sound("sprites/zvuky/Sheesh.mp3")
+        self.spectacular = pygame.mixer.Sound("sprites/zvuky/Spectacular.mp3")
+        self.spectacular.set_volume(2)
         self.select = pygame.mixer.Sound("sprites/zvuky/menu_select_sound.mp3")
         self.styl_styl = pygame.mixer.Sound("sprites/zvuky/styl styl 2.mp3")
         self.jezisku = pygame.mixer.Sound("sprites/zvuky/ježíšku na křížku 2.mp3")
@@ -474,7 +476,7 @@ while True:
         print_coins()
         score = int((time()*10 - start_time))
         if ((score) % 100 == 0 and score != predchozi_score):
-            zvuk = [zvuky.wow, zvuky.amazing, zvuky.sheesh, zvuky.styl_styl]
+            zvuk = [zvuky.wow, zvuky.amazing,zvuky.spectacular, zvuky.sheesh, zvuky.styl_styl]
             zvuky.play(zvuk[(score//100)%len(zvuk)])
             predchozi_score = score
         text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
@@ -508,7 +510,7 @@ while True:
         screen.blit(background, (0, 0))
         score = int((time() * 10 - start_time))
         if ((score) % 100 == 0 and score != predchozi_score):
-            zvuk = [zvuky.wow, zvuky.amazing, zvuky.sheesh, zvuky.styl_styl]
+            zvuk = [zvuky.wow, zvuky.amazing, zvuky.sheesh, zvuky.styl_styl, zvuky.spectacular]
             zvuky.play(zvuk[(score//100)%len(zvuk)])
             predchozi_score = score
         text = font.render("{:0>5d}".format(score), True, (255, 255, 255))
