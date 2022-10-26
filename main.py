@@ -136,6 +136,12 @@ class Lukas():
         img2 = pygame.image.load("sprites/grafika/dino02.png")
         self.animations = [img1, img2]
 
+    def set_skin_adamcova(self):
+        img1 = pygame.image.load("sprites/grafika/adamcova01.png")
+        img2 = pygame.image.load("sprites/grafika/adamcova02.png")
+        self.animations = [pygame.transform.scale(img1, (img1.get_width() * 3, img1.get_height() * 3)),
+                           pygame.transform.scale(img2, (img2.get_width() * 3, img2.get_height() * 3))]
+
 class Obstacles():
     def __init__(self):
         self.obstacles = []
@@ -217,6 +223,8 @@ def start_the_game():
         lukas.set_skin_dino()
     if (namebox_single_player.get_value()=="lukasenko"):
         lukas.set_skin_lukasenko()
+    if (namebox_single_player.get_value()=="divoka sarka"):
+        lukas.set_skin_adamcova()
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
     zvuky.play(zvuky.lets_go)
