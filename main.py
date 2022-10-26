@@ -149,6 +149,9 @@ class Obstacles():
         self.delay = 10
         self.image = pygame.image.load("sprites/grafika/cactus_scaled.png")
         self.coin = pygame.image.load("sprites/grafika/bitcoin.png")
+        if (config["premium"]):
+            self.image = pygame.image.load("sprites/grafika/cactus_realistic.png")
+            self.coin = pygame.image.load("sprites/grafika/bitcoin_realistic.png")
         self.velocities = [-5, -7, -8, -10, -12, -14]
         self.timer.set(self.delay)
 
@@ -205,6 +208,10 @@ def set_level():
         level += 1
 
 def play_menu_music():
+    if (config["premium"]):
+        pygame.mixer.music.load("sprites/hudba/menu_premium.mp3")
+        pygame.mixer.music.play(-1)
+        return
     pygame.mixer.music.load(f"""sprites/hudba/menu_theme{"2" if (randint(0, 40) == 0) else ""}.mp3""")
     pygame.mixer.music.play(-1)
 
@@ -294,6 +301,10 @@ def load_cia_warning():
     pygame.time.wait(4000)
 
 def play_battle_music():
+    if (config["premium"]):
+        pygame.mixer.music.load("sprites/hudba/overworld_premium.mp3")
+        pygame.mixer.music.play(-1)
+        return
     pygame.mixer.music.load("sprites/hudba/overworld_theme.mp3")
     pygame.mixer.music.play(-1)
 
@@ -370,10 +381,17 @@ pygame.display.set_icon(icon)
 y_border = 370
 running = True
 background = pygame.image.load("sprites/grafika/background_hogwarts05.png")
+background_menu = pygame.image.load("sprites/grafika/background_hogwarts_new.png")
+game_over_background_image_multiplayer = pygame.image.load("sprites/grafika/game_over_3.png")
+game_over_background_image = pygame.image.load("sprites/grafika/game_over_2.png")
+if (config["premium"]):
+    background = pygame.image.load("sprites/grafika/background_realistic.jpeg")
+    background_menu = pygame.image.load("sprites/grafika/background_realistic_menu.png")
+    game_over_background_image = pygame.image.load("sprites/grafika/game_over_premium.png")
+    game_over_background_image_multiplayer = pygame.image.load("sprites/grafika/game_over_premium_multiplayer.png")
 pygame.display.set_caption("#knotakjede")
 clock = pygame.time.Clock()
 ###################### Herni menu #################################################
-background_menu = pygame.image.load("sprites/grafika/background_hogwarts_new.png")
 mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent background
                 title_font_shadow=True,
                 widget_padding=25,
@@ -387,12 +405,10 @@ menu.add.button('two players', set_two_players_menu)
 menu.add.button('leave', pygame_menu.events.EXIT)
 ###################################################################################
 ################### Game Over Menu ################################################
-game_over_background_image = pygame.image.load("sprites/grafika/game_over_2.png")
 game_over = pygame_menu.Menu("", 800, 800, theme=mytheme)
 game_over.add.button("Play", start_the_game)
 game_over.add.button("Back to menu", set_menu)
 ################### Game Over Multiplayer Menu ################################################
-game_over_background_image_multiplayer = pygame.image.load("sprites/grafika/game_over_3.png")
 game_over_multiplayer = pygame_menu.Menu("", 800, 800, theme=mytheme)
 game_over_multiplayer.add.button("Play", start_the_multiplayer)
 game_over_multiplayer.add.button("Back to menu", set_menu)
