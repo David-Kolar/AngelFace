@@ -264,6 +264,9 @@ def empty_loop(time):
             if event.type == pygame.QUIT:
                 exit()
 
+            if (event.type == pygame.KEYDOWN):
+                return
+
 def load_knotstar():
     image = pygame.image.load("sprites/grafika/knotstar_games.png")
     sound = pygame.mixer.Sound("sprites/zvuky/knotstar_sound.mp3")
@@ -272,6 +275,7 @@ def load_knotstar():
     screen.blit(image, (0, 0))
     pygame.display.update()
     empty_loop(13000)
+    pygame.mixer.Sound.stop(sound)
 
 def load_company_intro():
     screen.fill((255, 255, 255))
@@ -281,6 +285,7 @@ def load_company_intro():
     screen.blit(image, (0, 0))
     pygame.display.update()
     empty_loop(11000)
+    pygame.mixer.Sound.stop(sound)
 
 def load_cia_warning():
     image = pygame.image.load("sprites/grafika/cia.png")
