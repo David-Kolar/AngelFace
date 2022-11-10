@@ -1,6 +1,6 @@
 company_intro = true
 cia = false
-premium = false
+premium = true
 audio = true
 name = "luk64"
 name2 = "angelface"

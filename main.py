@@ -64,6 +64,13 @@ class Lukas():
         img1 = pygame.image.load("sprites/grafika/lukas_tycka01.png")
         img2 = pygame.image.load("sprites/grafika/lukas_tycka02.png")
         self.animations = [pygame.transform.scale(img1, (img1.get_width()*3, img1.get_height()*3)), pygame.transform.scale(img2, (img2.get_width()*3, img2.get_height()*3))]
+        if (config["premium"]):
+            self.set_skin_king()
+
+    def set_skin_king(self):
+        img1 = pygame.image.load("sprites/grafika/lukas_tycka01_premium.png")
+        img2 = pygame.image.load("sprites/grafika/lukas_tycka02_premium.png")
+        self.animations = [img1, img2]
 
     def is_safe(self):
         global number_of_coins
@@ -244,6 +251,9 @@ def start_the_multiplayer():
     name1 = namebox1.get_value().upper()
     name2 = namebox2.get_value().upper()
     color = (0, 55, 55)
+    if (config["premium"]):
+        # yellow
+        color = (255, 210, 0)
     title1 = name_font.render(name1, True, color)
     title2 = name_font.render(name2, True, color)
     singleplayer = False
@@ -377,6 +387,7 @@ for i in range(len(medaile)):
 medaile_score = [100, 300, 600, 1000, 1500]
 screen = pygame.display.set_mode((800, 800))
 icon = pygame.image.load("sprites/grafika/lukas_hlava.png")
+if (config["premium"]): icon = pygame.image.load("sprites/grafika/lukas_hlava_premium.png")
 pygame.display.set_icon(icon)
 y_border = 370
 running = True
@@ -563,7 +574,10 @@ while True:
             game_over_menu = game_over
             screen.blit(game_over_background_image, (0, 0))
         else:
-            text = game_over_font.render(f"{message} won!".upper(), True, (50, 50, 50))
+            color = (50, 50, 50)
+            if (config["premium"]):
+                color = (255, 150, 0)
+            text = game_over_font.render(f"{message} won!".upper(), True, color)
             screen.blit(text, (50, 130))
         game_over_menu.draw(screen)
         if (game_over_menu.update(events)):
