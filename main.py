@@ -308,7 +308,7 @@ def load_cia_warning():
     image = pygame.image.load("sprites/grafika/cia.png")
     screen.blit(image, (0, 0))
     pygame.display.update()
-    pygame.time.wait(4000)
+    empty_loop(5000)
 
 def play_battle_music():
     if (config["premium"]):

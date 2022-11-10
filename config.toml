@@ -1,5 +1,5 @@
 company_intro = true
-cia = false
+cia = true
 premium = true
 audio = true
 name = "luk64"
