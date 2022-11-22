@@ -231,13 +231,14 @@ def start_the_game():
     start_time = time()*10
     highscore, coins = load_data()
     lukas = Lukas(100, y_border)
-    if (namebox_single_player.get_value()=="angelface"):
+    jmeno = namebox_single_player.get_value().lower().strip()
+    if (jmeno=="angelface"):
         lukas.set_skin_princezna()
-    if (namebox_single_player.get_value()=="dino"):
+    if (jmeno=="dino"):
         lukas.set_skin_dino()
-    if (namebox_single_player.get_value()=="lukasenko"):
+    if (jmeno=="lukasenko"):
         lukas.set_skin_lukasenko()
-    if (namebox_single_player.get_value()=="divoka sarka"):
+    if (jmeno=="divoka sarka"):
         lukas.set_skin_adamcova()
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
