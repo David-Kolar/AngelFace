@@ -148,6 +148,10 @@ class Lukas():
         img2 = pygame.image.load("sprites/grafika/adamcova02.png")
         self.animations = [pygame.transform.scale(img1, (img1.get_width() * 3, img1.get_height() * 3)),
                            pygame.transform.scale(img2, (img2.get_width() * 3, img2.get_height() * 3))]
+    def set_skin_wick(self):
+        img1 = pygame.image.load("sprites/grafika/lucas_wick01.png")
+        img2 = pygame.image.load("sprites/grafika/lucas_wick02.png")
+        self.animations = [img1, img2]
 
 class Obstacles():
     def __init__(self):
@@ -240,6 +244,9 @@ def start_the_game():
         lukas.set_skin_lukasenko()
     if (jmeno=="divoka sarka"):
         lukas.set_skin_adamcova()
+    if (jmeno=="lucas wick"):
+        lukas.set_skin_wick()
+
     obstacles = Obstacles()
     for i in range(5): obstacles.add_random()
     zvuky.play(zvuky.lets_go)
